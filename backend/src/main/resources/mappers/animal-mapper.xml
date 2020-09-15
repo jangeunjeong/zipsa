@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.AnimalMapper">
+
+	<select id="findById" parameterType="java.lang.Long"
+		resultType="Animal">
+		SELECT * FROM ANIMAL WHERE id = #{id}
+	</select>
+
+	<select id="getAllAnimals" resultType="Animal">
+		SELECT * FROM ANIMAL;
+	</select>
+
+	<select id="getAnimalsByUserId" parameterType="User"
+		resultType="Animal">
+		SELECT * FROM ANIMAL WHERE id IN (SELECT fk_animal_id FROM
+		USER_CERTIFICATION WHERE fk_user_id IN (SELECT id FROM USER WHERE
+		email = #{email}))
+		
+	</select>
+
+	<select id="getAnimalByUserId" parameterType="User"
+		resultType="Animal">
+		SELECT * FROM ANIMAL WHERE id IN (SELECT fk_animal_id FROM
+		USER WHERE email = #{email})
+	</select>
+
+	<select id="getAnimalById" parameterType="Animal"
+		resultType="Animal">
+		SELECT * FROM ANIMAL WHERE id = #{id};
+	</select>
+
+	<select id="getNowAnimal" parameterType="User"
+    resultType="Animal">
+    	SELECT U.fk_animal_id as id, U.fk_animal_id as breed, (SELECT IMG FROM ANIMAL WHERE ID = U.FK_ANIMAL_ID) AS img from USER AS U WHERE email = #{email};
+	</select>
+
+</mapper>

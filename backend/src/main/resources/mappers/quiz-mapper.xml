@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.QuizMapper">
+	
+	<select id="getCommonQuizs" parameterType="User" resultType="com.ssafy.project.model.Quiz$List">
+		SELECT ID, CONTENTS, ANSWER, FK_ANIMAL_ID FROM QUIZ WHERE id NOT IN (SELECT fk_quiz_id FROM QUIZ_RESULT WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email})) and fk_animal_id IN (SELECT IF(FK_ANIMAL_ID = (1 OR 3 OR 4), 1, 2) AS fk_animal_id FROM USER WHERE email = #{email});
+	</select>
+	
+	<select id="getMyQuizs" 
+	parameterType="User"
+	resultType="Quiz">
+		SELECT * FROM QUIZ WHERE id NOT IN (SELECT fk_quiz_id FROM QUIZ_RESULT WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email})) and fk_animal_id IN (SELECT fk_animal_id FROM USER WHERE email = #{email});
+	</select>
+	
+	<select id="getQuiz" resultType="Quiz">
+		SELECT * FROM QUIZ WHERE id = #{id};
+	</select>
+	
+	<insert id="insertQuizResult" parameterType="Quiz_result">
+		INSERT INTO QUIZ_RESULT(user_answer,is_answer,fk_user_id,fk_quiz_id) VALUES (#{user_answer},#{is_answer},#{fk_user_id},#{fk_quiz_id})
+	</insert>
+	
+	<select id="getFailedQuizs" 
+	parameterType="User" 
+	resultType="com.ssafy.project.model.Quiz$List">
+		SELECT * FROM QUIZ WHERE id IN (SELECT fk_quiz_id FROM QUIZ_RESULT WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email}) and is_answer = 0);
+	</select>
+	
+	<delete id="deleteFailedQuizs" parameterType="Quiz_result">
+		DELETE FROM QUIZ_RESULT WHERE fk_user_id = #{fk_user_id} and fk_quiz_id = #{fk_quiz_id}
+	</delete>
+	
+		<select id="findQuizChoiceByQuizId" parameterType="java.lang.Long" resultType="Quiz_choice">
+		SELECT * FROM QUIZ_CHOICE WHERE FK_QUIZ_ID = #{id}
+	</select>
+	
+	<select id="findTodayQuizByEmail" parameterType="String" resultType="com.ssafy.project.model.Quiz$List">
+		SELECT ID, CONTENTS, ANSWER, FK_ANIMAL_ID FROM QUIZ WHERE ID IN (SELECT FK_QUIZ_ID FROM TODAY_QUIZ WHERE FK_USER_ID IN (SELECT ID FROM USER WHERE EMAIL = #{email}))
+	</select>
+	
+	<select id="findQuizIdByUserId" parameterType="Long" resultType="Long">
+		SELECT ID FROM QUIZ WHERE ID NOT IN (SELECT FK_QUIZ_ID FROM QUIZ_RESULT WHERE FK_USER_ID = #{userId} AND IS_ANSWER = 1) and FK_ANIMAL_ID IN (SELECT IF(FK_ANIMAL_ID = (1 OR 3 OR 4), 1, 2) AS FK_ANIMAL_ID FROM USER WHERE ID = #{userId}) LIMIT 2
+	</select>
+	
+	<select id="findQuizIdByAnimalId" parameterType="Long" resultType="Long">
+		SELECT ID FROM QUIZ WHERE ID NOT IN (SELECT FK_QUIZ_ID FROM QUIZ_RESULT WHERE FK_USER_ID = #{userId} AND IS_ANSWER = 1) and FK_ANIMAL_ID = (SELECT FK_ANIMAL_ID FROM USER WHERE ID = #{userId}) LIMIT 2
+	</select>
+	
+	<insert id="saveTodayQuiz" parameterType="HashMap">
+		INSERT INTO TODAY_QUIZ(FK_USER_ID, FK_QUIZ_ID) VALUES(#{userId}, #{quizId})
+	</insert>
+	
+	<delete id="deleteTodayQuiz">
+		DELETE FROM TODAY_QUIZ	
+	</delete>
+	
+	<delete id="deleteSolvedTodayQuiz" parameterType="Long">
+		DELETE FROM TODAY_QUIZ WHERE FK_QUIZ_ID = #{id}
+	</delete>
+	
+	<select id="findSolvedQuizByEmail" parameterType="String"
+	    resultType="com.ssafy.project.model.Quiz$List">
+	    SELECT * FROM QUIZ WHERE ID IN (SELECT FK_QUIZ_ID FROM
+	    QUIZ_RESULT
+	    WHERE FK_USER_ID = (SELECT ID FROM USER WHERE
+	    EMAIL =
+	    #{email}))
+	</select>
+	
+	
+</mapper>

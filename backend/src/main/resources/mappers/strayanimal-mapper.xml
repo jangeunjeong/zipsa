@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.StrayAnimalMapper">
+
+	<select id="findAll"
+		parameterType="com.ssafy.project.model.Stray_animal$SearchKeyword"
+		resultType="com.ssafy.project.model.Stray_animal$List">
+		<![CDATA[
+			SELECT ID, STRAY_ID, IMG, BREED, GENDER,
+			CREATED_AT, DELETED_AT, CENTER_NAME
+			FROM STRAY_ANIMAL
+			WHERE ADDRESS LIKE CONCAT('%', #{address}, '%') AND CENTER_NAME LIKE CONCAT('%', #{center_name}, '%') AND BREED LIKE CONCAT('%', #{breed}, '%') AND deleted_AT >= #{deleted_at}
+		]]>
+	</select>
+
+	<select id="findById" parameterType="String"
+		resultType="com.ssafy.project.model.Stray_animal">
+		SELECT ID, STRAY_ID, IMG, BREED, COLOR,
+		GENDER, AGE, WEIGHT,
+		CREATED_AT, DELETED_AT, ADDRESS, TEL, CENTER_NAME
+		FROM STRAY_ANIMAL
+		WHERE ID = #{id}
+	</select>
+
+	<select id="findCenterNameAllByAddress" parameterType="String"
+		resultType="String">
+		SELECT CENTER_NAME
+		FROM STRAY_ANIMAL
+		WHERE ADDRESS LIKE CONCAT('%', #{address}, '%')
+		GROUP BY CENTER_NAME
+	</select>
+
+	<select id="findBreedAllByAnimal" parameterType="com.ssafy.project.model.Stray_animal$SearchKeyword"
+		resultType="String">
+		SELECT BREED
+		FROM STRAY_ANIMAL
+		WHERE ADDRESS LIKE CONCAT('%', #{address}, '%') AND CENTER_NAME LIKE CONCAT('%', #{center_name}, '%') AND BREED LIKE CONCAT('%', #{breed}, '%') AND deleted_AT >= #{deleted_at}
+		GROUP BY BREED
+	</select>
+	
+	<insert id="insertCSV"
+		parameterType="Stray_animal">
+		INSERT INTO zipsa.STRAY_ANIMAL(stray_id,img,breed,color,gender,age,weight,created_at,deleted_at,address,tel,center_name) VALUES (#{stray_id},#{img},#{breed},#{color},#{gender},#{age},#{weight},#{created_at},#{deleted_at},#{address},#{tel},#{center_name})
+	</insert>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.ItemMapper">
+	
+	
+	<select id="getAllMyItemsPrices"
+		parameterType="User"
+		resultType="Integer">
+		SELECT sum(item_price) from ITEM WHERE id IN (SELECT fk_item_id from ITEM_HAVE WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email}));
+	</select>
+	
+	<select id="getMissionItems"
+		parameterType="Mission"
+		resultType="Item">
+		SELECT * FROM ITEM WHERE fk_mission_id = #{id}
+	</select>
+	
+	
+</mapper>

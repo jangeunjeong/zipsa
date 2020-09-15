@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.UserMapper">
+
+	<insert id="insertUser" parameterType="User">
+		INSERT INTO
+		USER(email,nickname,finance,allergy,housing_type,working_time,agreement,fk_animal_id)
+		VALUES
+		(#{email},#{nickname},#{finance},#{allergy},#{housing_type},#{working_time},#{agreement},#{fk_animal_id})
+	</insert>
+
+	<select id="selectFinance" parameterType="User"
+		resultType="Integer">
+		SELECT finance FROM USER WHERE email = #{email}
+	</select>
+
+	<select id="getUser" parameterType="User" resultType="User">
+		SELECT *
+		FROM USER WHERE email = #{email}
+	</select>
+
+	<update id="updateUser" parameterType="User">
+		UPDATE USER SET allergy =
+		#{allergy}, housing_type = #{housing_type}, working_time =
+		#{working_time} WHERE email = #{email}
+	</update>
+
+	<update id="updateAnimal" parameterType="User">
+		UPDATE USER SET
+		fk_animal_id = #{fk_animal_id}, animal_name = #{animal_name} WHERE
+		email = #{email}
+	</update>
+
+	<select id="getNowAnimalName" parameterType="User" resultType="String">
+		SELECT animal_name FROM USER WHERE email = #{email}
+	</select>
+	
+	<select id="getCertiHave" parameterType="User" resultType="Integer">
+		SELECT animal_name FROM USER WHERE email = #{email}
+	</select>
+	
+	<select id="findAllId" resultType="Long">
+		SELECT ID FROM USER ORDER BY ID;
+	</select>
+	
+</mapper>

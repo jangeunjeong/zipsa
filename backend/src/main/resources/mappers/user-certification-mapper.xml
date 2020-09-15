@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.CertificationMapper">
+	
+	
+	<select id="cntCertification"
+		parameterType="User"
+		resultType="Integer">
+		SELECT count(*) FROM USER_CERTIFICATION WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email} ) AND fk_animal_id = #{fk_animal_id};
+	</select>
+	
+	<select id="getCertifications"
+		parameterType="User"
+		resultType="String">
+		SELECT breed FROM ANIMAL WHERE id IN (SELECT fk_animal_id FROM USER_CERTIFICATION WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email}))
+	</select>
+	
+	<select id="cntNowAnimalCerti"
+		parameterType="User"
+		resultType="Integer">
+		SELECT count(*) FROM USER_CERTIFICATION WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email} ) AND fk_animal_id = #{fk_animal_id};
+	</select>
+	
+	<select id="getCertifiedAnimal"
+		parameterType="User"
+		resultType="User_certification">
+		SELECT * FROM USER_CERTIFICATION WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email})
+	</select>
+	
+</mapper>
