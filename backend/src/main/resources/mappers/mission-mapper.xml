@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.MissionMapper">
+	
+	<insert id="initCatMission"
+		parameterType="Mission_state">
+		INSERT INTO zipsa.MISSION_STATE(fk_user_id,fk_mission_id,day1,day2,day3,day4,day5,day6,day7,is_daily,start_date)
+		VALUES (#{fk_user_id},#{fk_mission_id},0,0,0,0,0,0,0,(SELECT is_daily FROM zipsa.MISSION WHERE id = #{fk_mission_id}),#{start_date})
+	</insert>
+	
+	<insert id="initDogMission"
+		parameterType="Mission_state">
+		INSERT INTO zipsa.MISSION_STATE (fk_user_id, fk_mission_id,day1,day2,day3,day4,day5,day6,day7,is_daily,start_date)
+		VALUES (#{fk_user_id},#{fk_mission_id},0,0,0,0,0,0,0,(SELECT is_daily FROM zipsa.MISSION WHERE id = #{fk_mission_id}),#{start_date})
+	</insert>
+	
+	<select id="getDogDailyMissions"
+		resultType="Mission">
+		SELECT * FROM MISSION LIMIT 9
+	</select>
+	
+	<select id="getCatDailyMissions"
+		resultType="Mission">
+		SELECT * FROM MISSION LIMIT 10
+	</select>
+	
+	<select id="getMissionState"
+		parameterType="Mission_state"
+		resultType="Mission_state">
+		SELECT * FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</select>
+	
+	
+	<update id="setMissionStateDay1"
+		parameterType="Mission_state">
+		UPDATE zipsa.MISSION_STATE SET day1 = 1 WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</update>
+	
+	<update id="setMissionStateDay2"
+		parameterType="Mission_state">
+		UPDATE zipsa.MISSION_STATE SET day2 = 1 WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</update>
+	
+	<update id="setMissionStateDay3"
+		parameterType="Mission_state">
+		UPDATE zipsa.MISSION_STATE SET day3 = 1 WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</update>
+	
+	<update id="setMissionStateDay4"
+		parameterType="Mission_state">
+		UPDATE zipsa.MISSION_STATE SET day4 = 1 WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</update>
+	
+	<update id="setMissionStateDay5"
+		parameterType="Mission_state">
+		UPDATE zipsa.MISSION_STATE SET day5 = 1 WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</update>
+	
+	<update id="setMissionStateDay6"
+		parameterType="Mission_state">
+		UPDATE zipsa.MISSION_STATE SET day6 = 1 WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</update>
+	
+	<update id="setMissionStateDay7"
+		parameterType="Mission_state">
+		UPDATE zipsa.MISSION_STATE SET day7 = 1 WHERE fk_user_id = #{fk_user_id} AND fk_mission_id = #{fk_mission_id}
+	</update>
+	
+	<select id="chkMissionStateDay1"
+		parameterType="Mission_state"
+		resultType="Integer">
+		SELECT day1 FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND is_daily = 1;
+	</select>
+	
+	<select id="chkMissionStateDay2"
+		parameterType="Mission_state"
+		resultType="Integer">
+		SELECT day2 FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND is_daily = 1;
+	</select>
+	
+	<select id="chkMissionStateDay3"
+		parameterType="Mission_state"
+		resultType="Integer">
+		SELECT day3 FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND is_daily = 1;
+	</select>
+	
+	<select id="chkMissionStateDay4"
+		parameterType="Mission_state"
+		resultType="Integer">
+		SELECT day4 FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND is_daily = 1;
+	</select>
+	
+	<select id="chkMissionStateDay5"
+		parameterType="Mission_state"
+		resultType="Integer">
+		SELECT day5 FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND is_daily = 1;
+	</select>
+	
+	<select id="chkMissionStateDay6"
+		parameterType="Mission_state"
+		resultType="Integer">
+		SELECT day6 FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND is_daily = 1;
+	</select>
+	
+	<select id="chkMissionStateDay7"
+		parameterType="Mission_state"
+		resultType="Integer">
+		SELECT day7 FROM zipsa.MISSION_STATE WHERE fk_user_id = #{fk_user_id} AND is_daily = 1;
+	</select>
+	
+	<select id="getCntCompleteByMissionId" 
+		parameterType="User"
+   	 	resultType="Integer">
+    	SELECT sum(day1+day2+day3+day4+day5+day6+day7) as cntcomplete FROM zipsa.MISSION_STATE WHERE fk_user_id = (SELECT id FROM zipsa.USER WHERE email = #{email}) GROUP BY fk_mission_id ORDER BY fk_mission_id
+	</select>
+	
+	<select id="chkWeeklyMissionState"
+		parameterType="User"
+   	 	resultType="Integer">
+		SELECT sum(day1+day2+day3+day4+day5+day6+day7) as cntcomplete FROM zipsa.MISSION_STATE WHERE is_daily = 0 AND fk_user_id = (SELECT id FROM zipsa.USER WHERE email = #{email}) GROUP BY fk_mission_id ORDER BY fk_mission_id;
+	</select>
+	
+	<insert id="insertMissionComplete"
+		parameterType="Mission_complete">
+		INSERT INTO zipsa.MISSION_COMPLETE(date_time,fk_user_id,fk_mission_id)
+		VALUES (#{date_time},#{fk_user_id}, #{fk_mission_id})
+	</insert>
+	
+	<delete id="deleteMissionState"
+		parameterType="User">
+		DELETE FROM zipsa.MISSION_STATE WHERE fk_user_id = #{id}
+	</delete>
+	
+</mapper>

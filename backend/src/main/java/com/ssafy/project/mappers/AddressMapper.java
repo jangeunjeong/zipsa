@@ -1,0 +1,10 @@
+package com.ssafy.project.mappers;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface AddressMapper {
+	public List<String> findTownAllByCity(String city);
+}

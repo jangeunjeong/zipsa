@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.project.mappers.QuizMapper">
+	
+	<select id="getCommonQuizs" 
+	parameterType="User"
+	resultType="Quiz">
+		SELECT * FROM QUIZ WHERE id NOT IN (SELECT fk_quiz_id FROM QUIZ_RESULT WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email})) and fk_animal_id IN (SELECT IF(1 OR 3 OR 4, 1, 2) AS fk_animal_id FROM USER WHERE email = #{email});
+	</select>
+	
+	<select id="getMyQuizs" 
+	parameterType="User"
+	resultType="Quiz">
+		SELECT * FROM QUIZ WHERE id NOT IN (SELECT fk_quiz_id FROM quiz_result WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email})) and fk_animal_id IN (SELECT fk_animal_id FROM USER WHERE email = #{email});
+	</select>
+	
+	<select id="getQuiz" resultType="Quiz">
+		SELECT * FROM QUIZ WHERE id = #{id};
+	</select>
+	
+	<insert id="insertQuizResult" parameterType="Quiz_result">
+		INSERT INTO QUIZ_RESULT(user_answer,is_answer,fk_user_id,fk_quiz_id) VALUES (#{user_answer},#{is_answer},#{fk_user_id},#{fk_quiz_id})
+	</insert>
+	
+	<select id="getFailedQuizs" 
+	parameterType="User" 
+	resultType="Quiz">
+		SELECT * FROM QUIZ WHERE id IN (SELECT fk_quiz_id FROM quiz_result WHERE fk_user_id IN (SELECT id FROM USER WHERE email = #{email}) and is_answer = 0);
+	</select>
+	
+	<delete id="deleteFailedQuizs" parameterType="Quiz_result">
+		DELETE FROM QUIZ_RESULT WHERE fk_user_id = #{fk_user_id} and fk_quiz_id = #{fk_quiz_id}
+	</delete>
+	
+</mapper>
